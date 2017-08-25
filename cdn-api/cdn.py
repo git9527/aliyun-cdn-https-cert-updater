@@ -121,7 +121,7 @@ if __name__ == '__main__':
 
     for arg in sys.argv[idx:]:
         try:
-            key, value = arg.split('=')
+            key, value = arg.split('=', 1)
             user_params[key.strip()] = value
         except ValueError, e:
             print(e.read().strip())
