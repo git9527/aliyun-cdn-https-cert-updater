@@ -17,8 +17,7 @@ import traceback
 access_key_id = '';
 access_key_secret = '';
 cdn_server_address = 'https://cdn.aliyuncs.com'
-CONFIGFILE = os.getcwd() + '/aliyun.ini'
-CONFIGSECTION = 'Credentials'
+
 cmdlist = '''
 接口说明请参照pdf文档
 '''
@@ -67,32 +66,6 @@ def compose_url(user_params):
 def make_request(user_params, quiet=False):
     url = compose_url(user_params)
     print url
-def configure_accesskeypair(args, options):
-    if options.accesskeyid is None or options.accesskeysecret is None:
-        print("config miss parameters, use --id=[accesskeyid] --secret=[accesskeysecret]")
-        sys.exit(1)
-    config = ConfigParser.RawConfigParser()
-    config.add_section(CONFIGSECTION)
-    config.set(CONFIGSECTION, 'accesskeyid', options.accesskeyid)
-    config.set(CONFIGSECTION, 'accesskeysecret', options.accesskeysecret)
-    cfgfile = open(CONFIGFILE, 'w+')
-    config.write(cfgfile)
-    cfgfile.close()
-
-def setup_credentials():
-    config = ConfigParser.ConfigParser()
-    try:
-        config.read(CONFIGFILE)
-        global access_key_id
-        global access_key_secret
-        access_key_id = config.get(CONFIGSECTION, 'accesskeyid')
-        access_key_secret = config.get(CONFIGSECTION, 'accesskeysecret')
-    except Exception, e:
-		print traceback.format_exc()
-		print("can't get access key pair, use config --id=[accesskeyid] --secret=[accesskeysecret] to setup")
-		sys.exit(1)
-
-
 
 if __name__ == '__main__':
     parser = OptionParser("%s Action=action Param1=Value1 Param2=Value2\n" % sys.argv[0])
@@ -107,11 +80,9 @@ if __name__ == '__main__':
     if args[0] == 'help':
 		print cmdlist
 		sys.exit(0)
-    if args[0] != 'config':
-		setup_credentials()
-    else: #it's a configure id/secret command
-        configure_accesskeypair(args, options)
-        sys.exit(0)
+
+    access_key_id = options.accesskeyid
+    access_key_secret = options.accesskeysecret
 
     user_params = {}
     idx = 1
@@ -119,7 +90,7 @@ if __name__ == '__main__':
         user_params['action'] = sys.argv[1]
         idx = 2
 
-    for arg in sys.argv[idx:]:
+    for arg in args:
         try:
             key, value = arg.split('=', 1)
             user_params[key.strip()] = value
