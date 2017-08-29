@@ -3,5 +3,11 @@
 使用方法:
 
 1. 确保python已安装Requests(http://docs.python-requests.org/en/master/user/install/#install)
-2. 执行如下命令
-python updater.py -i LTAI**** -s aBPGz3**** -d www.***.*** -p ./certs/*.key -c ./certs/fullchain.cer
+2. 使用说明
+    * 上传新的key文件和cert文件
+    
+        `python updater.py -i LTAI**** -s aBPGz3**** -d www.***.*** -p ./certs/*.key -c ./certs/fullchain.cer`
+    * 使用已有cert name更新https设置
+    
+        `python updater.py -i LTAI**** -s aBPGz3**** -d www.***.*** -n some_name`
+
